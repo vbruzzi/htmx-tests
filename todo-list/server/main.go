@@ -48,5 +48,5 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Renderer = getTemplates()
 	handlers.SetupRoutes(e)
-	e.Logger.Fatal(e.Start(":888"))
+	e.Logger.Fatal(e.Start(":8080"))
 }

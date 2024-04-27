@@ -11,6 +11,15 @@
     ></script>
     <link rel="stylesheet" href="./views/index.css" />
     <script>
+      // Allows 422 validation responses to replace content
+      document.addEventListener("DOMContentLoaded", (event) => {
+        document.body.addEventListener("htmx:beforeSwap", function (evt) {
+          if (evt.detail.xhr.status === 422) {
+            evt.detail.shouldSwap = true;
+            evt.detail.isError = false;
+          }
+        });
+      });
       // 🌘 CSS Scope Inline (https://github.com/gnat/css-scope-inline)
       window.cssScopeCount ??= 1; // Let extra copies share the scope count.
       window.cssScope ??= new MutationObserver((mutations) => {
@@ -56,21 +65,7 @@
     </script>
   </head>
   <body>
-    <style>
-      * {
-        font-family: "arial";
-      }
-      header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-    </style>
-
-    <header>
-      <h3>Your Todo List</h3>
-    </header>
-    <section>{{ template "list" . }}</section>
+    {{template "content" . }}
   </body>
 </html>
 {{ end }}

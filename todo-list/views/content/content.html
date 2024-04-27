@@ -1,0 +1,20 @@
+{{ block "content" . }}
+<style>
+  * {
+    font-family: "arial";
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<header>
+  <h3>Your Todo List</h3>
+</header>
+<section>
+  <div>{{ template "todoForm" }}</div>
+  <div>{{ template "todoList" }}</div>
+</section>
+{{end}}

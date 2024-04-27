@@ -7,7 +7,7 @@ import (
 )
 
 type FormData struct {
-	Value string
+	Todo string
 }
 
 type Form struct {
@@ -22,19 +22,19 @@ func listSubroutes(e *echo.Echo) {
 	})
 
 	g.POST("", func(c echo.Context) error {
-		value := c.FormValue("value")
+		todo := c.FormValue("value")
 
-		if value == "" {
+		if todo == "" {
 			res := Form{
-				FormData{value},
+				FormData{todo},
 				FormData{"Value cannot be empty"},
 			}
 
-			return c.Render(http.StatusUnprocessableEntity, "user-input", res)
+			return c.Render(http.StatusUnprocessableEntity, "todoForm", res)
 		}
 
-		c.Render(http.StatusOK, "user-input", nil)
-		return c.Render(http.StatusOK, "oob-item", FormData{value})
+		c.Render(http.StatusOK, "todoForm", nil)
+		return c.Render(http.StatusOK, "oobItem", FormData{todo})
 	})
 
 }
