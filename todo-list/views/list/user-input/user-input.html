@@ -10,8 +10,18 @@
     }
   </style>
   <div>
-    <input type="text" name="todoItem" />
+    <input
+      type="text"
+      name="value"
+      {{if
+      .Values.Value}}
+      value="{{ .Values.Value }}"
+      {{end}}
+    />
     <button type="submit">Add</button>
+    {{if .Errors.Value }}
+    <span>{{.Errors.Value}}</span>
+    {{end}}
   </div>
 </form>
 {{end}}

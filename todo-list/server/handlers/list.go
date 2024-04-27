@@ -6,8 +6,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type Item struct {
+type FormData struct {
 	Value string
+}
+
+type Form struct {
+	Values FormData
+	Errors FormData
 }
 
 func listSubroutes(e *echo.Echo) {
@@ -17,10 +22,19 @@ func listSubroutes(e *echo.Echo) {
 	})
 
 	g.POST("", func(c echo.Context) error {
-		val := c.FormValue("todoItem")
+		value := c.FormValue("value")
+
+		if value == "" {
+			res := Form{
+				FormData{value},
+				FormData{"Value cannot be empty"},
+			}
+
+			return c.Render(http.StatusUnprocessableEntity, "user-input", res)
+		}
 
 		c.Render(http.StatusOK, "user-input", nil)
-		return c.Render(http.StatusOK, "oob-item", Item{val})
+		return c.Render(http.StatusOK, "oob-item", FormData{value})
 	})
 
 }
