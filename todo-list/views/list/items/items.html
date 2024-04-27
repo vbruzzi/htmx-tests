@@ -1,0 +1,10 @@
+{{block "items" . }}
+<style>
+  #items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1em;
+  }
+</style>
+<div id="items">{{ range . }} {{ template "item" . }} {{end}} {{end}}</div>

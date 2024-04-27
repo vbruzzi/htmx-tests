@@ -1,12 +1,10 @@
 ## HTMX Tests
 
-Tests I made to learn/practice htmx with Go.
+Throwaway htmx/go tests.
 
 ### Ideas
 
-- Communicate with a database (turso?)
-- Containerized project
-- Infinite loading
-- Todo list
-- Authenticated logins
-- Tailwind
+- [ ] Todo list
+- [ ] Persist in DB (turso?)
+- [x] Infinite scrolling
+- [ ] Authenticated logins
