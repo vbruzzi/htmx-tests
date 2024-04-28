@@ -1,47 +1,47 @@
 {{ block "todoForm" . }}
 <form hx-post="/list">
-  <style>
-    .form {
-      display: flex;
-    width: 100%;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .controls {
-    display: flex;
-    gap: 5px;
-    }
-    .todo {
-    flex: 1;
-    background: transparent;
-    border: none;
-    border-bottom: solid 1px var(--main);
-    }
-    .todo:focus {
-    outline: none;
-    }
-    .error {
-      color: red;
-    }
-  </style>
-  <div class="form">
-    <div class="controls">
-      <input
-      class="todo"
-        type="text"
-        name="value"
-        {{if
-        .Values.Todo}}
-        value="{{ .Values.Todo }}"
+    <style>
+        .form {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .controls {
+            display: flex;
+            gap: 5px;
+        }
+        .todo {
+            flex: 1;
+            background: transparent;
+            border: none;
+            border-bottom: solid 1px var(--main);
+        }
+        .todo:focus {
+            outline: none;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+    <div class="form">
+        <div class="controls">
+            <input
+                class="todo"
+                type="text"
+                name="value"
+                {{if
+                .Values.Todo}}
+                value="{{ .Values.Todo }}"
+                {{end}}
+            />
+            <button type="submit">Add</button>
+        </div>
+        {{if .Errors.Todo }}
+        <div>
+            <span class="error">{{.Errors.Todo}}</span>
+        </div>
         {{end}}
-      />
-      <button type="submit">Add</button>
     </div>
-    {{if .Errors.Todo }}
-    <div>
-      <span class="error">{{.Errors.Todo}}</span>
-    </div>
-    {{end}}
-  </div>
 </form>
 {{end}}
