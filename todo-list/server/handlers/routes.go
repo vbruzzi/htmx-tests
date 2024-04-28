@@ -8,7 +8,7 @@ import (
 
 func SetupRoutes(e *echo.Echo) {
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "index", nil)
+		return c.Render(http.StatusOK, "index", []FormData{{"Test"}})
 	})
 
 	listSubroutes(e)

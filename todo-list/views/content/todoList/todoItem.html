@@ -3,11 +3,18 @@
   .item {
     padding: 1em;
     width: 300px;
-    border: 1px solid black;
+    border: 1px solid #b5c18e;
     border-radius: 5px;
+    display: flex;
     animation: fadeInAnimation ease 0.5s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+  }
+  .options {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 100%;
   }
   @keyframes fadeInAnimation {
     0% {
@@ -20,5 +27,12 @@
   }
 </style>
 
-<div class="item">{{ .Todo }}</div>
+<div class="item">
+  {{ .Todo }}
+
+  <div class="options">
+    <input type="checkbox" />
+    <img src="/static/trash.svg" />
+  </div>
+</div>
 {{end}}

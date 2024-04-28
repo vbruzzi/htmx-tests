@@ -47,6 +47,7 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Renderer = getTemplates()
+	e.Static("/static", "assets")
 	handlers.SetupRoutes(e)
 	e.Logger.Fatal(e.Start(":8080"))
 }
