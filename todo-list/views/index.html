@@ -66,8 +66,14 @@
   </head>
   <body>
     <style>
+    :root {
+        --main: #1A4D2E;
+        --neutral: #F5EFE6;
+    }
+
       body {
-        background-color: #f7dcb9;
+        background-color: var(--neutral);
+        margin:0;
       }
     </style>
     {{template "content" . }}
@@ -76,7 +82,7 @@
 {{ end }}
 
 <!--
-  Palette maybe? 
+  Palette maybe?
   B5C18E
   F7DCB9
   DEAC80

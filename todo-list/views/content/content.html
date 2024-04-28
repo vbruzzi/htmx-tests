@@ -1,14 +1,26 @@
 {{ block "content" . }}
+
 <style>
   * {
     font-family: "arial";
-    color: #819684;
   }
-  header {
+ header {
+ display:flex;
+ padding-left: 10px;
+    margin-bottom: 10px;
+    color: var(--neutral);
+    background-color: var(--main);
+  }
+section {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
+}
+section > div {
+
+    width: 300px;
+ }
 </style>
 
 <header>

@@ -1,11 +1,12 @@
 {{block "todoItem" . }}
 <style>
   .item {
-    padding: 1em;
-    width: 300px;
-    border: 1px solid #b5c18e;
-    border-radius: 5px;
+  width: 100%;
+    border-bottom: 1px solid var(--main);
+    padding: 10px 0;
     display: flex;
+    align-items: center;
+
     animation: fadeInAnimation ease 0.5s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
@@ -15,6 +16,13 @@
     align-items: flex-end;
     justify-content: flex-end;
     width: 100%;
+  }
+  .delete {
+    opacity: 50%;
+  }
+
+  .delete:hover {
+    opacity: 100%;
   }
   @keyframes fadeInAnimation {
     0% {
@@ -28,11 +36,11 @@
 </style>
 
 <div class="item">
-  {{ .Todo }}
+    <input type="checkbox" hx-post="/todo/{{ .Id }}" />
+  <div>{{ .Todo }}</div>
 
   <div class="options">
-    <input type="checkbox" />
-    <img src="/static/trash.svg" />
+    <img class="delete" src="/static/trash.svg" />
   </div>
 </div>
 {{end}}

@@ -3,18 +3,31 @@
   <style>
     .form {
       display: flex;
+    width: 100%;
       flex-direction: column;
-      justify-items: center;
-      align-items: center;
       justify-content: center;
+    }
+    .controls {
+    display: flex;
+    gap: 5px;
+    }
+    .todo {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: solid 1px var(--main);
+    }
+    .todo:focus {
+    outline: none;
     }
     .error {
       color: red;
     }
   </style>
   <div class="form">
-    <div>
+    <div class="controls">
       <input
+      class="todo"
         type="text"
         name="value"
         {{if

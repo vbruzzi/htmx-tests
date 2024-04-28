@@ -6,13 +6,28 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type FormData struct {
+type FormErrors struct {
 	Todo string
 }
 
+// todo: remove id, make another class
+type FormValues struct {
+	Id   int
+	Todo string
+	Done bool
+}
+
 type Form struct {
-	Values FormData
-	Errors FormData
+	Values FormValues
+	Errors FormErrors
+}
+
+func newTodo(id int, todo string) FormValues {
+	return FormValues{
+		1,
+		todo,
+		false,
+	}
 }
 
 func listSubroutes(e *echo.Echo) {
@@ -26,15 +41,16 @@ func listSubroutes(e *echo.Echo) {
 
 		if todo == "" {
 			res := Form{
-				FormData{todo},
-				FormData{"Value cannot be empty"},
+				newTodo(0, todo),
+				FormErrors{"Value cannot be empty"},
 			}
 
 			return c.Render(http.StatusUnprocessableEntity, "todoForm", res)
 		}
 
 		c.Render(http.StatusOK, "todoForm", nil)
-		return c.Render(http.StatusOK, "oobItem", FormData{todo})
+		return c.Render(http.StatusOK, "oobItem", newTodo(1, todo))
+
 	})
 
 }
