@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"io"
 	"io/fs"
 	"path/filepath"
@@ -8,6 +9,7 @@ import (
 	"text/template"
 	"vbruzzi/todo-list/server/handlers"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -43,11 +45,34 @@ func getTemplates() *Templates {
 	}
 }
 
-func main() {
+func initRouter() error {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Renderer = getTemplates()
 	e.Static("/static", "assets")
 	handlers.SetupRoutes(e)
-	e.Logger.Fatal(e.Start(":8080"))
+	return e.Start(":8080")
+}
+
+func connectDb() error {
+	ctx := context.Background()
+	conn, err := pgx.Connect(ctx, "user=pqgotest dbname=pqgotest sslmode=verify-full")
+
+	if err != nil {
+		return err
+	}
+	defer conn.Close(ctx)
+}
+
+func main() {
+	err := initRouter()
+	if err != nil {
+		panic(err)
+	}
+
+	err = connectDb()
+	if err != nil {
+		panic(err)
+	}
+
 }

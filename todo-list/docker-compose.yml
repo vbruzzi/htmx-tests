@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: todolist
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    volumes:
+      - ./:/app
+    ports:
+      - 8080:8080
+
+  migrate:
+    build:
+      dockerfile: migrate.Dockerfile
+    command: tail -F anything
+    environment:
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: host=postgres port=5432 user=postgres password=postgres dbname=todos
+    volumes:
+      - ./db:/db
+    links:
+      - postgres
+volumes:
+  postgres-data:
