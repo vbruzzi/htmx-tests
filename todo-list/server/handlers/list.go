@@ -1,10 +1,15 @@
 package handlers
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	db "vbruzzi/todo-list/db/sqlc"
 
 	"github.com/labstack/echo/v4"
 )
+
+type List struct{}
 
 type FormErrors struct {
 	Todo string
@@ -30,10 +35,21 @@ func newTodo(id int, todo string) FormValues {
 	}
 }
 
-func listSubroutes(e *echo.Echo) {
+func NewListHandlers(e *echo.Echo, q *db.Queries) {
 	g := e.Group("/list")
+
 	g.GET("", func(c echo.Context) error {
-		return c.String(http.StatusOK, "etst")
+		todos, err := q.ListTodos(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		return c.Render(http.StatusOK, "todoList", todos)
 	})
 
 	g.POST("", func(c echo.Context) error {
@@ -48,8 +64,14 @@ func listSubroutes(e *echo.Echo) {
 			return c.Render(http.StatusUnprocessableEntity, "todoForm", res)
 		}
 
+		newTodo, err := q.CreateTodo(context.Background(), todo)
+
+		if err != nil {
+			return err
+		}
+
 		c.Render(http.StatusOK, "todoForm", nil)
-		return c.Render(http.StatusOK, "oobItem", newTodo(1, todo))
+		return c.Render(http.StatusOK, "oobItem", newTodo)
 
 	})
 

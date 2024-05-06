@@ -19,6 +19,8 @@ services:
       - ./:/app
     ports:
       - 8080:8080
+    links:
+      - postgres
 
   migrate:
     build:
@@ -28,7 +30,7 @@ services:
       GOOSE_DRIVER: postgres
       GOOSE_DBSTRING: host=postgres port=5432 user=postgres password=postgres dbname=todo_app
     volumes:
-      - ./db:/db
+      - ./db/migrations:/migrations
     links:
       - postgres
 volumes:

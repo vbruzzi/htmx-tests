@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+	db "vbruzzi/todo-list/db/sqlc"
 	"vbruzzi/todo-list/server/handlers"
 
 	"github.com/jackc/pgx/v5"
@@ -45,32 +46,38 @@ func getTemplates() *Templates {
 	}
 }
 
-func initRouter() error {
+func initRouter(queries *db.Queries) error {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Renderer = getTemplates()
 	e.Static("/static", "assets")
-	handlers.SetupRoutes(e)
+	handlers.SetupRoutes(e, queries)
 	return e.Start(":8080")
 }
 
-func connectDb() error {
+func connectDb() (*db.Queries, func(), error) {
 	ctx := context.Background()
-	conn, err := pgx.Connect(ctx, "user=pqgotest dbname=pqgotest sslmode=verify-full")
+	// todo: read conn from env
+	conn, err := pgx.Connect(ctx, "host=postgres user=postgres dbname=todo_app password=postgres")
 
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
-	defer conn.Close(ctx)
+
+	queries := db.New(conn)
+
+	return queries, func() { conn.Close(ctx) }, nil
 }
 
 func main() {
-	err := initRouter()
+	queries, close, err := connectDb()
 	if err != nil {
 		panic(err)
 	}
 
-	err = connectDb()
+	defer close()
+
+	err = initRouter(queries)
 	if err != nil {
 		panic(err)
 	}

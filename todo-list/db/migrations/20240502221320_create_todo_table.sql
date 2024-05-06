@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE todos (
-    id INT NOT NULL,
+    id SERIAL NOT NULL,
     todo TEXT NOT NULL,
     created_on TIMESTAMP NOT NULL,
     PRIMARY KEY (id)

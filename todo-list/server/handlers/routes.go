@@ -1,15 +1,23 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
+	db "vbruzzi/todo-list/db/sqlc"
 
 	"github.com/labstack/echo/v4"
 )
 
-func SetupRoutes(e *echo.Echo) {
+func SetupRoutes(e *echo.Echo, q *db.Queries) {
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "index", []FormValues{newTodo(1, "test")})
+		todos, err := q.ListTodos(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		return c.Render(http.StatusOK, "index", todos)
 	})
 
-	listSubroutes(e)
+	NewListHandlers(e, q)
 }

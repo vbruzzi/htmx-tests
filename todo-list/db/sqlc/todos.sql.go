@@ -9,6 +9,17 @@ import (
 	"context"
 )
 
+const createTodo = `-- name: CreateTodo :one
+INSERT INTO todos (todo, created_on) VALUES ($1, NOW()) RETURNING id, todo, created_on
+`
+
+func (q *Queries) CreateTodo(ctx context.Context, todo string) (Todo, error) {
+	row := q.db.QueryRow(ctx, createTodo, todo)
+	var i Todo
+	err := row.Scan(&i.ID, &i.Todo, &i.CreatedOn)
+	return i, err
+}
+
 const listTodos = `-- name: ListTodos :many
 SELECT id, todo, created_on FROM todos
 `
