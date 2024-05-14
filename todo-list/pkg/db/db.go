@@ -7,16 +7,21 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func ConnectDb() (*db.Queries, func(), error) {
+type Db struct {
+	Queries *db.Queries
+	Close   func()
+}
+
+func ConnectDb() (*Db, error) {
 	ctx := context.Background()
 	// todo: read conn from env
 	conn, err := pgx.Connect(ctx, "host=postgres user=postgres dbname=todo_app password=postgres")
 
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	queries := db.New(conn)
 
-	return queries, func() { conn.Close(ctx) }, nil
+	return &Db{queries, func() { conn.Close(ctx) }}, nil
 }

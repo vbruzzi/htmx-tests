@@ -2,20 +2,22 @@ package main
 
 import (
 	"vbruzzi/todo-list/pkg/db"
-	routehandler "vbruzzi/todo-list/server/routeHandler"
+	routehandler "vbruzzi/todo-list/pkg/routeHandler"
 )
 
 func main() {
-	queries, close, err := db.ConnectDb()
+	res, err := db.ConnectDb()
 	if err != nil {
 		panic(err)
 	}
 
-	defer close()
+	defer res.Close()
 
-	err = routehandler.InitRouter(queries)
+	router, err := routehandler.NewRouter(res.Queries)
 	if err != nil {
 		panic(err)
 	}
+
+	router.Init()
 
 }

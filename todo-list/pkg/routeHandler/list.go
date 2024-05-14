@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	db "vbruzzi/todo-list/db/sqlc"
 
 	"github.com/labstack/echo/v4"
 )
@@ -35,11 +34,11 @@ func newTodo(id int, todo string) FormValues {
 	}
 }
 
-func NewListHandlers(e *echo.Echo, q *db.Queries) {
-	g := e.Group("/list")
+func NewListHandlers(r *Router) {
+	g := r.echo.Group("/list")
 
 	g.GET("", func(c echo.Context) error {
-		todos, err := q.ListTodos(context.Background())
+		todos, err := r.queries.ListTodos(context.Background())
 
 		if err != nil {
 			return err
@@ -64,7 +63,7 @@ func NewListHandlers(e *echo.Echo, q *db.Queries) {
 			return c.Render(http.StatusUnprocessableEntity, "todoForm", res)
 		}
 
-		newTodo, err := q.CreateTodo(context.Background(), todo)
+		newTodo, err := r.queries.CreateTodo(context.Background(), todo)
 
 		if err != nil {
 			return err
