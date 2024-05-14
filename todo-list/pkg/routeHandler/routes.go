@@ -1,16 +1,15 @@
-package main
+package routehandler
 
 import (
 	"context"
+	"html/template"
 	"io"
 	"io/fs"
+	"net/http"
 	"path/filepath"
 	"strings"
-	"text/template"
 	db "vbruzzi/todo-list/db/sqlc"
-	"vbruzzi/todo-list/server/handlers"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -46,40 +45,25 @@ func getTemplates() *Templates {
 	}
 }
 
-func initRouter(queries *db.Queries) error {
+func setupRoutes(e *echo.Echo, q *db.Queries) {
+	e.GET("/", func(c echo.Context) error {
+		todos, err := q.ListTodos(context.Background())
+
+		if err != nil {
+			return err
+		}
+
+		return c.Render(http.StatusOK, "index", todos)
+	})
+
+	NewListHandlers(e, q)
+}
+
+func InitRouter(queries *db.Queries) error {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Renderer = getTemplates()
 	e.Static("/static", "assets")
-	handlers.SetupRoutes(e, queries)
+	setupRoutes(e, queries)
 	return e.Start(":8080")
-}
-
-func connectDb() (*db.Queries, func(), error) {
-	ctx := context.Background()
-	// todo: read conn from env
-	conn, err := pgx.Connect(ctx, "host=postgres user=postgres dbname=todo_app password=postgres")
-
-	if err != nil {
-		return nil, nil, err
-	}
-
-	queries := db.New(conn)
-
-	return queries, func() { conn.Close(ctx) }, nil
-}
-
-func main() {
-	queries, close, err := connectDb()
-	if err != nil {
-		panic(err)
-	}
-
-	defer close()
-
-	err = initRouter(queries)
-	if err != nil {
-		panic(err)
-	}
-
 }

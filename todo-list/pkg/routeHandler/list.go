@@ -29,7 +29,7 @@ type Form struct {
 
 func newTodo(id int, todo string) FormValues {
 	return FormValues{
-		1,
+		id,
 		todo,
 		false,
 	}
