@@ -1,4 +1,4 @@
-package handlers
+package routehandler
 
 import "github.com/labstack/echo/v4"
 
