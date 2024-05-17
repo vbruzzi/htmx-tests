@@ -4,7 +4,9 @@ Throwaway htmx/go tests.
 
 ### Ideas
 
-- [ ] Todo list
-- [ ] Persist in DB (turso?)
+- [x] Todo list
+- [x] Persist in db
 - [x] Infinite scrolling
+- [] Testing
+- [] Communicating with nested SPA
 - [ ] Authenticated logins

@@ -21,7 +21,7 @@ func ConnectDb() (*Db, error) {
 		return nil, err
 	}
 
-	queries := db.New(conn)
+	queries := db.New(conn
 
 	return &Db{queries, func() { conn.Close(ctx) }}, nil
 }
