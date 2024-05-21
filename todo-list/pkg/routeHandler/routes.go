@@ -3,6 +3,7 @@ package routehandler
 import (
 	"context"
 	"net/http"
+	"path/filepath"
 	db "vbruzzi/todo-list/db/sqlc"
 	templateparser "vbruzzi/todo-list/pkg/templateParser"
 
@@ -35,7 +36,7 @@ func (r *Router) Init() error {
 func NewRouter(queries *db.Queries) (*Router, error) {
 	e := echo.New()
 	e.Use(middleware.Logger())
-	e.Renderer = templateparser.GetTemplates()
+	e.Renderer = templateparser.ParseTemplates(filepath.Walk)
 	return &Router{
 		echo:    e,
 		queries: queries,

@@ -10,10 +10,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func ParseTemplates() {
-
-}
-
 type Templates struct {
 	templates *template.Template
 }
@@ -23,9 +19,11 @@ func (t *Templates) Render(w io.Writer, name string, data interface{}, c echo.Co
 
 }
 
-func parseTemplates() *template.Template {
+type DirectoryWalker = func(string, filepath.WalkFunc) error
+
+func ParseTemplates(dw DirectoryWalker) *Templates {
 	templates := template.New("")
-	err := filepath.Walk("./views", func(path string, info fs.FileInfo, err error) error {
+	err := dw("./views", func(path string, info fs.FileInfo, err error) error {
 		if strings.Contains(path, ".html") {
 			_, err = templates.ParseFiles(path)
 		}
@@ -36,11 +34,7 @@ func parseTemplates() *template.Template {
 		panic(err)
 	}
 
-	return templates
-}
-
-func GetTemplates() *Templates {
 	return &Templates{
-		templates: parseTemplates(),
+		templates,
 	}
 }

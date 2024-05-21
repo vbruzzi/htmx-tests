@@ -1,9 +1,9 @@
 package routehandler
 
 import (
-	"context"
-	"fmt"
 	"net/http"
+	errors "vbruzzi/todo-list/pkg/error"
+	todoservice "vbruzzi/todo-list/pkg/todoService"
 
 	"github.com/labstack/echo/v4"
 )
@@ -36,16 +36,13 @@ func newTodo(id int, todo string) FormValues {
 
 func NewListHandlers(r *Router) {
 	g := r.echo.Group("/list")
+	service := todoservice.NewTodoService(r.queries)
 
 	g.GET("", func(c echo.Context) error {
-		todos, err := r.queries.ListTodos(context.Background())
+		todos, err := service.ListTodos()
 
 		if err != nil {
-			return err
-		}
-
-		if err != nil {
-			fmt.Println(err)
+			return err.Err
 		}
 
 		return c.Render(http.StatusOK, "todoList", todos)
@@ -53,25 +50,19 @@ func NewListHandlers(r *Router) {
 
 	g.POST("", func(c echo.Context) error {
 		todo := c.FormValue("value")
+		newEntry, err := service.CreateTodo(todo)
 
-		if todo == "" {
+		if err.Code == errors.EINVALID {
 			res := Form{
 				newTodo(0, todo),
 				FormErrors{"Value cannot be empty"},
 			}
 
-			return c.Render(http.StatusUnprocessableEntity, "todoForm", res)
-		}
-
-		newTodo, err := r.queries.CreateTodo(context.Background(), todo)
-
-		if err != nil {
-			return err
+			return c.Render(err.Status, "todoForm", res)
 		}
 
 		c.Render(http.StatusOK, "todoForm", nil)
-		return c.Render(http.StatusOK, "oobItem", newTodo)
-
+		return c.Render(http.StatusOK, "oobItem", newEntry)
 	})
 
 }
