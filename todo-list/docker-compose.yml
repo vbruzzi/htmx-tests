@@ -4,21 +4,21 @@ services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: todo_app
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PW
+      POSTGRES_DB: $POSTGRES_DB
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "$POSTGRES_PORT:5432"
   app:
     build:
       dockerfile: Dockerfile
-      context: ./
+      context: .
     volumes:
       - ./:/app
     ports:
-      - 8080:8080
+      - "$SERVER_PORT:8080"
     links:
       - postgres
 
@@ -28,7 +28,7 @@ services:
     command: tail -F anything
     environment:
       GOOSE_DRIVER: postgres
-      GOOSE_DBSTRING: host=postgres port=5432 user=postgres password=postgres dbname=todo_app
+      GOOSE_DBSTRING: host=$POSTGRES_HOST port=$POSTGRES_PORT user=$POSTGRES_USER password=$POSTGRES_PW dbname=$POSTGRES_DB
     volumes:
       - ./db/migrations:/migrations
     links:
