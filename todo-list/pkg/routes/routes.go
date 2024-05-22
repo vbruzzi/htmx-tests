@@ -1,10 +1,11 @@
-package routehandler
+package routes
 
 import (
 	"context"
 	"net/http"
 	"path/filepath"
 	db "vbruzzi/todo-list/db/sqlc"
+	"vbruzzi/todo-list/pkg/handlers/todos"
 	templateparser "vbruzzi/todo-list/pkg/templateParser"
 
 	"github.com/labstack/echo/v4"
@@ -28,7 +29,8 @@ func (r *Router) Init() error {
 		return c.Render(http.StatusOK, "index", todos)
 	})
 
-	NewListHandlers(r)
+	todoGroup := r.echo.Group("/todos")
+	todos.NewTodoHandler(todoGroup, r.queries)
 
 	return r.echo.Start(":8080")
 }

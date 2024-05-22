@@ -4,7 +4,7 @@ import (
 	"log"
 	"vbruzzi/todo-list/pkg/config"
 	"vbruzzi/todo-list/pkg/db"
-	routehandler "vbruzzi/todo-list/pkg/routeHandler"
+	"vbruzzi/todo-list/pkg/routes"
 )
 
 func main() {
@@ -13,6 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to read config: %+v", err)
 	}
+
 	res, err := db.ConnectDb(conf)
 	if err != nil {
 		panic(err)
@@ -20,7 +21,7 @@ func main() {
 
 	defer res.Close()
 
-	router, err := routehandler.NewRouter(res.Queries)
+	router, err := routes.NewRouter(res.Queries)
 	if err != nil {
 		panic(err)
 	}
