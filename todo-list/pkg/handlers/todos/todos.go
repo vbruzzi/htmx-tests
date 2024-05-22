@@ -4,7 +4,7 @@ import (
 	"net/http"
 	db "vbruzzi/todo-list/db/sqlc"
 	errors "vbruzzi/todo-list/pkg/error"
-	todoservice "vbruzzi/todo-list/pkg/todoService"
+	todoservice "vbruzzi/todo-list/pkg/services/todoService"
 
 	"github.com/labstack/echo/v4"
 )
@@ -51,7 +51,7 @@ func (h *TodoHandler) getTodos(c echo.Context) error {
 
 func (h *TodoHandler) createTodo(c echo.Context) error {
 	todo := c.FormValue("value")
-	newEntry, err := service.CreateTodo(todo)
+	newEntry, err := h.todoService.CreateTodo(todo)
 
 	if err.Code == errors.EINVALID {
 		res := Form{

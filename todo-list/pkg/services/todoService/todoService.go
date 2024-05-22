@@ -38,6 +38,6 @@ func (ts *TodoService) CreateTodo(todo string) (*db.Todo, *errors.Error) {
 	return &res, nil
 }
 
-func NewTodoService(q *db.Queries) *TodoService {
+func NewTodoService(q TodoServiceQueries) *TodoService {
 	return &TodoService{q}
 }
