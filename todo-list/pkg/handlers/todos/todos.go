@@ -19,7 +19,7 @@ type FormErrors struct {
 	Todo string
 }
 
-// todo: remove id, make another class
+// todo: move to models.go
 type FormValues struct {
 	Id   int
 	Todo string
