@@ -53,7 +53,11 @@ func (h *TodoHandler) createTodo(c echo.Context) error {
 	todo := c.FormValue("value")
 	newEntry, err := h.todoService.CreateTodo(todo)
 
-	if err.Code == errors.EINVALID {
+	if err != nil {
+		if err.Code != errors.EINVALID {
+			return err.Err
+		}
+
 		res := Form{
 			newTodo(0, todo),
 			FormErrors{"Value cannot be empty"},
