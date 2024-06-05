@@ -17,7 +17,6 @@ type Db struct {
 func ConnectDb(config *config.Conf) (*Db, error) {
 
 	ctx := context.Background()
-	// todo: read conn from env
 	conn, err := pgx.Connect(
 		ctx,
 		fmt.Sprintf(

@@ -13,3 +13,10 @@ type Todo struct {
 	Todo      string
 	CreatedOn pgtype.Timestamp
 }
+
+type User struct {
+	ID          int32
+	Username    string
+	DateCreated pgtype.Timestamp
+	Password    string
+}

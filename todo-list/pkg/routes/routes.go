@@ -26,6 +26,7 @@ func (r *Router) Init() error {
 	r.echo.Static("/static", "assets")
 	r.echo.GET("/", func(c echo.Context) error {
 		data := homeData{LoggedIn: false}
+
 		todos, err := r.queries.ListTodos(context.Background())
 
 		if err != nil {
