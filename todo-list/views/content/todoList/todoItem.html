@@ -17,7 +17,12 @@
         justify-content: flex-end;
         width: 100%;
     }
+    .todo-item {
+        border: none;
+    }
     .delete {
+        background: none;
+        border: none;
         opacity: 50%;
     }
 
@@ -37,10 +42,17 @@
 
 <div class="item">
     <input type="checkbox" hx-post="/todos/{{ .ID }}" />
-    <div>{{ .Todo }}</div>
+    <div class="todo-item">{{ .Todo }}</div>
 
     <div class="options">
-        <img class="delete" src="/static/trash.svg" />
+        <button
+            class="delete"
+            hx-delete="/todos/{{ .ID }}"
+            hx-target="closest .item"
+            hx-swap="outerHTML"
+        >
+            <img src="/static/trash.svg" />
+        </button>
     </div>
 </div>
 {{end}}

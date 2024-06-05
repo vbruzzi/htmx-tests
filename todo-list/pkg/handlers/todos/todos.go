@@ -1,7 +1,9 @@
 package todos
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	db "vbruzzi/todo-list/db/sqlc"
 	errors "vbruzzi/todo-list/pkg/error"
 	todoservice "vbruzzi/todo-list/pkg/services/todoService"
@@ -70,6 +72,24 @@ func (h *TodoHandler) createTodo(c echo.Context) error {
 	return c.Render(http.StatusOK, "oobItem", newEntry)
 }
 
+func (h *TodoHandler) deleteTodo(c echo.Context) error {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr[1:])
+
+	if err != nil {
+		fmt.Printf("%+v", err)
+		return c.Render(http.StatusOK, "error", nil)
+	}
+
+	deleteErr := h.todoService.DeleteTodo(int32(id))
+
+	if deleteErr != nil {
+		return c.Render(http.StatusOK, "error", nil)
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
 func NewTodoHandler(g *echo.Group, q *db.Queries) {
 	handler := &TodoHandler{
 		todoservice.NewTodoService(q),
@@ -77,4 +97,5 @@ func NewTodoHandler(g *echo.Group, q *db.Queries) {
 
 	g.GET("", handler.getTodos)
 	g.POST("", handler.createTodo)
+	g.DELETE(":id", handler.deleteTodo)
 }

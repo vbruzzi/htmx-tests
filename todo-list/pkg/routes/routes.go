@@ -17,16 +17,23 @@ type Router struct {
 	echo    *echo.Echo
 }
 
+type homeData struct {
+	Todos    []db.Todo
+	LoggedIn bool
+}
+
 func (r *Router) Init() error {
 	r.echo.Static("/static", "assets")
 	r.echo.GET("/", func(c echo.Context) error {
+		data := homeData{LoggedIn: false}
 		todos, err := r.queries.ListTodos(context.Background())
 
 		if err != nil {
 			return err
 		}
 
-		return c.Render(http.StatusOK, "index", todos)
+		data.Todos = todos
+		return c.Render(http.StatusOK, "index", data)
 	})
 
 	todoGroup := r.echo.Group("/todos")

@@ -20,6 +20,9 @@ func (m *mockTodoServiceQueries) ListTodos(ctx context.Context) ([]db.Todo, erro
 func (m *mockTodoServiceQueries) CreateTodo(ctx context.Context, todo string) (db.Todo, error) {
 	return db.Todo{ID: 1, Todo: todo}, nil
 }
+func (m *mockTodoServiceQueries) DeleteTodo(ctx context.Context, id int32) error {
+	return nil
+}
 
 type mockFailedTodoServiceQueries struct{}
 
@@ -29,6 +32,9 @@ func (m *mockFailedTodoServiceQueries) ListTodos(ctx context.Context) ([]db.Todo
 func (m *mockFailedTodoServiceQueries) CreateTodo(ctx context.Context, todo string) (db.Todo, error) {
 	var t db.Todo
 	return t, errors.New("bar")
+}
+func (m *mockFailedTodoServiceQueries) DeleteTodo(ctx context.Context, id int32) error {
+	return errors.New("baz")
 }
 
 func createService(t *testing.T, testingErrs bool) (todoservice.TodoService, *assert.Assertions) {
@@ -83,5 +89,19 @@ func TestCreateError(t *testing.T) {
 	createRes, er := service.CreateTodo("foo")
 
 	assert.Nil(createRes)
+	assert.Equal(er.Code, err.EINTERNAL)
+}
+
+func TestDelete(t *testing.T) {
+	service, assert := createService(t, false)
+	er := service.DeleteTodo(1)
+
+	assert.Nil(er)
+}
+
+func TestFailedDelete(t *testing.T) {
+	service, assert := createService(t, true)
+	er := service.DeleteTodo(1)
+
 	assert.Equal(er.Code, err.EINTERNAL)
 }

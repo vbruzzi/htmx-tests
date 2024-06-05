@@ -82,7 +82,38 @@
                 margin: 0;
             }
         </style>
-        {{template "content" . }}
+        
+        <style>
+            * {
+                font-family: "arial";
+            }
+            header {
+                display: flex;
+                padding-left: 10px;
+                margin-bottom: 10px;
+                color: var(--neutral);
+                background-color: var(--main);
+            }
+            #main-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            #main-content > div {
+                width: 300px;
+            }
+        </style>
+        <header>
+            <h3>Your Todo List</h3>
+        </header>
+        <section id="main-content">
+            {{ if .LoggedIn }}
+                {{ template "protectedContent" . }} 
+            {{ else }}
+                {{ template "login" }}
+            {{ end }}
+        </section>
     </body>
 </html>
 {{ end }}

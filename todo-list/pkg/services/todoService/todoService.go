@@ -9,6 +9,7 @@ import (
 type TodoServiceQueries interface {
 	ListTodos(ctx context.Context) ([]db.Todo, error)
 	CreateTodo(ctx context.Context, todo string) (db.Todo, error)
+	DeleteTodo(ctx context.Context, id int32) error
 }
 
 type TodoService struct {
@@ -36,6 +37,15 @@ func (ts *TodoService) CreateTodo(todo string) (*db.Todo, *errors.Error) {
 	}
 
 	return &res, nil
+}
+
+func (ts *TodoService) DeleteTodo(id int32) *errors.Error {
+	err := ts.queries.DeleteTodo(context.Background(), id)
+	if err != nil {
+		return errors.NewError(err, errors.EINTERNAL)
+	}
+
+	return nil
 }
 
 func NewTodoService(q TodoServiceQueries) *TodoService {
