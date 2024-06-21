@@ -14,8 +14,8 @@ import (
 
 type mockTodoServiceQueries struct{}
 
-func (m *mockTodoServiceQueries) ListTodos(ctx context.Context) ([]db.Todo, error) {
-	return []db.Todo{{ID: 1, Todo: "foo"}}, nil
+func (m *mockTodoServiceQueries) ListTodos(ctx context.Context) ([]db.ListTodosRow, error) {
+	return []db.ListTodosRow{{ID: 1, Todo: "foo"}}, nil
 }
 func (m *mockTodoServiceQueries) CreateTodo(ctx context.Context, todo string) (db.Todo, error) {
 	return db.Todo{ID: 1, Todo: todo}, nil
@@ -26,7 +26,7 @@ func (m *mockTodoServiceQueries) DeleteTodo(ctx context.Context, id int32) error
 
 type mockFailedTodoServiceQueries struct{}
 
-func (m *mockFailedTodoServiceQueries) ListTodos(ctx context.Context) ([]db.Todo, error) {
+func (m *mockFailedTodoServiceQueries) ListTodos(ctx context.Context) ([]db.ListTodosRow, error) {
 	return nil, errors.New("foo")
 }
 func (m *mockFailedTodoServiceQueries) CreateTodo(ctx context.Context, todo string) (db.Todo, error) {

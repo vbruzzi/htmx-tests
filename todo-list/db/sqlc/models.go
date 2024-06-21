@@ -12,6 +12,7 @@ type Todo struct {
 	ID        int32
 	Todo      string
 	CreatedOn pgtype.Timestamp
+	UserID    int32
 }
 
 type User struct {
@@ -19,4 +20,5 @@ type User struct {
 	Username    string
 	DateCreated pgtype.Timestamp
 	Password    string
+	LoginKey    pgtype.Text
 }

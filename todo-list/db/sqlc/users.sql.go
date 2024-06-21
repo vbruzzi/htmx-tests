@@ -33,25 +33,57 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 	return i, err
 }
 
-const getUser = `-- name: GetUser :one
+const getUserByCredentials = `-- name: GetUserByCredentials :one
+SELECT id,login_key FROM users WHERE username = $1 AND password = $2
+`
+
+type GetUserByCredentialsParams struct {
+	Username string
+	Password string
+}
+
+type GetUserByCredentialsRow struct {
+	ID       int32
+	LoginKey pgtype.Text
+}
+
+func (q *Queries) GetUserByCredentials(ctx context.Context, arg GetUserByCredentialsParams) (GetUserByCredentialsRow, error) {
+	row := q.db.QueryRow(ctx, getUserByCredentials, arg.Username, arg.Password)
+	var i GetUserByCredentialsRow
+	err := row.Scan(&i.ID, &i.LoginKey)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
 SELECT id, username, date_created FROM users WHERE id = $1
 `
 
-type GetUserRow struct {
+type GetUserByIdRow struct {
 	ID          int32
 	Username    string
 	DateCreated pgtype.Timestamp
 }
 
-func (q *Queries) GetUser(ctx context.Context, id int32) (GetUserRow, error) {
-	row := q.db.QueryRow(ctx, getUser, id)
-	var i GetUserRow
+func (q *Queries) GetUserById(ctx context.Context, id int32) (GetUserByIdRow, error) {
+	row := q.db.QueryRow(ctx, getUserById, id)
+	var i GetUserByIdRow
 	err := row.Scan(&i.ID, &i.Username, &i.DateCreated)
 	return i, err
 }
 
+const getUserIdFromLoginKey = `-- name: GetUserIdFromLoginKey :one
+SELECT id FROM users WHERE login_key = $1
+`
+
+func (q *Queries) GetUserIdFromLoginKey(ctx context.Context, loginKey pgtype.Text) (int32, error) {
+	row := q.db.QueryRow(ctx, getUserIdFromLoginKey, loginKey)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
+}
+
 const listUsers = `-- name: ListUsers :many
-SELECT id, username, date_created FROM users
+SELECT id, username,date_created FROM users
 `
 
 type ListUsersRow struct {
@@ -78,4 +110,18 @@ func (q *Queries) ListUsers(ctx context.Context) ([]ListUsersRow, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const setUserKey = `-- name: SetUserKey :exec
+UPDATE users SET login_key = $1 WHERE id = $2
+`
+
+type SetUserKeyParams struct {
+	LoginKey pgtype.Text
+	ID       int32
+}
+
+func (q *Queries) SetUserKey(ctx context.Context, arg SetUserKeyParams) error {
+	_, err := q.db.Exec(ctx, setUserKey, arg.LoginKey, arg.ID)
+	return err
 }

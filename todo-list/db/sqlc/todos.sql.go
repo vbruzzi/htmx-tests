@@ -7,16 +7,23 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createTodo = `-- name: CreateTodo :one
-INSERT INTO todos (todo, created_on) VALUES ($1, NOW()) RETURNING id, todo, created_on
+INSERT INTO todos (todo, created_on) VALUES ($1, NOW()) RETURNING id, todo, created_on, user_id
 `
 
 func (q *Queries) CreateTodo(ctx context.Context, todo string) (Todo, error) {
 	row := q.db.QueryRow(ctx, createTodo, todo)
 	var i Todo
-	err := row.Scan(&i.ID, &i.Todo, &i.CreatedOn)
+	err := row.Scan(
+		&i.ID,
+		&i.Todo,
+		&i.CreatedOn,
+		&i.UserID,
+	)
 	return i, err
 }
 
@@ -33,15 +40,21 @@ const listTodos = `-- name: ListTodos :many
 SELECT id, todo, created_on FROM todos
 `
 
-func (q *Queries) ListTodos(ctx context.Context) ([]Todo, error) {
+type ListTodosRow struct {
+	ID        int32
+	Todo      string
+	CreatedOn pgtype.Timestamp
+}
+
+func (q *Queries) ListTodos(ctx context.Context) ([]ListTodosRow, error) {
 	rows, err := q.db.Query(ctx, listTodos)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Todo
+	var items []ListTodosRow
 	for rows.Next() {
-		var i Todo
+		var i ListTodosRow
 		if err := rows.Scan(&i.ID, &i.Todo, &i.CreatedOn); err != nil {
 			return nil, err
 		}

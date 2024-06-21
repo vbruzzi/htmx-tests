@@ -9,5 +9,8 @@
     }
 </style>
 <div id="todoList">
-    {{ range .Todos }} {{ template "todoItem" . }} {{end}} {{end}}
+    {{ range .Todos }} 
+        {{ template "todoItem" . }} 
+    {{end}}
 </div>
+{{end}}

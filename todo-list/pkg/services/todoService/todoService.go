@@ -7,7 +7,7 @@ import (
 )
 
 type TodoServiceQueries interface {
-	ListTodos(ctx context.Context) ([]db.Todo, error)
+	ListTodos(ctx context.Context) ([]db.ListTodosRow, error)
 	CreateTodo(ctx context.Context, todo string) (db.Todo, error)
 	DeleteTodo(ctx context.Context, id int32) error
 }
@@ -16,7 +16,7 @@ type TodoService struct {
 	queries TodoServiceQueries
 }
 
-func (ts *TodoService) ListTodos() ([]db.Todo, *errors.Error) {
+func (ts *TodoService) ListTodos() ([]db.ListTodosRow, *errors.Error) {
 	res, err := ts.queries.ListTodos(context.Background())
 
 	if err != nil {

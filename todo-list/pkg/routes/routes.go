@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"path/filepath"
 	db "vbruzzi/todo-list/db/sqlc"
+	"vbruzzi/todo-list/pkg/handlers/login"
 	"vbruzzi/todo-list/pkg/handlers/todos"
 	templateparser "vbruzzi/todo-list/pkg/templateParser"
 
@@ -27,15 +28,17 @@ func (r *Router) Init() error {
 	r.echo.GET("/", func(c echo.Context) error {
 		data := homeData{LoggedIn: false}
 
-		todos, err := r.queries.ListTodos(context.Background())
+		_, err := r.queries.ListTodos(context.Background())
 
 		if err != nil {
 			return err
 		}
 
-		data.Todos = todos
 		return c.Render(http.StatusOK, "index", data)
 	})
+
+	loginGroup := r.echo.Group("/login")
+	login.NewLoginHandler(loginGroup, r.queries)
 
 	todoGroup := r.echo.Group("/todos")
 	todos.NewTodoHandler(todoGroup, r.queries)
