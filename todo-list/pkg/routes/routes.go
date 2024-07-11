@@ -43,7 +43,7 @@ func (r *Router) Init() error {
 	todoGroup := r.echo.Group("/todos")
 	todos.NewTodoHandler(todoGroup, r.queries)
 
-	return r.echo.Start(":8080")
+	return r.echo.Start(":3000")
 }
 
 func NewRouter(queries *db.Queries) (*Router, error) {
