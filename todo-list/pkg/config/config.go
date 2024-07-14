@@ -10,8 +10,16 @@ type DbConf struct {
 	Username string `env:"POSTGRES_USER,required"`
 }
 
+type OidcConfig struct {
+	Authority    string `env:"OIDC_AUTHORITY,required"`
+	ClientId     string `env:"CLIENT_ID,required"`
+	ClientSecret string `env:"CLIENT_SECRET,required"`
+	RedirectUrl  string `env:"OIDC_REDIRECT_URL,required"`
+}
+
 type Conf struct {
-	Db DbConf
+	Db   DbConf
+	Oidc OidcConfig
 }
 
 func NewConfig() (*Conf, error) {
