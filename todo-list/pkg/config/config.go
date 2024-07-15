@@ -12,8 +12,8 @@ type DbConf struct {
 
 type OidcConfig struct {
 	Authority    string `env:"OIDC_AUTHORITY,required"`
-	ClientId     string `env:"CLIENT_ID,required"`
-	ClientSecret string `env:"CLIENT_SECRET,required"`
+	ClientId     string `env:"OIDC_CLIENT_ID,required"`
+	ClientSecret string `env:"OIDC_CLIENT_SECRET,required"`
 	RedirectUrl  string `env:"OIDC_REDIRECT_URL,required"`
 }
 

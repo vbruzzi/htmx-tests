@@ -1,7 +1,6 @@
 package login
 
 import (
-	"crypto"
 	"fmt"
 	"net/http"
 	db "vbruzzi/todo-list/db/sqlc"
@@ -43,8 +42,6 @@ func (h *LoginHandler) login(c echo.Context) error {
 		fmt.Println(i)
 		salt = append(salt, byte(i))
 	}
-
-	h2 := crypto.MD5.New()
 
 	return c.Render(http.StatusOK, "todoList", nil)
 }

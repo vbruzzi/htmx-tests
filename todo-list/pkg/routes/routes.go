@@ -24,6 +24,21 @@ type homeData struct {
 }
 
 func (r *Router) Init() error {
+	r.echo.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			auth, err := c.Cookie("auth")
+
+			if err != nil {
+				// handle redirect
+			}
+
+			if err = next(c); err != nil {
+				c.Error(err)
+			}
+
+			return nil
+		}
+	})
 	r.echo.Static("/static", "assets")
 	r.echo.GET("/", func(c echo.Context) error {
 		data := homeData{LoggedIn: false}
