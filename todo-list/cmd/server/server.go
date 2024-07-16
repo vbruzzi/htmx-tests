@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"vbruzzi/todo-list/pkg/auth"
 	"vbruzzi/todo-list/pkg/config"
 	"vbruzzi/todo-list/pkg/db"
 	"vbruzzi/todo-list/pkg/routes"
@@ -26,5 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	router.Init()
+	authHandler := auth.New(conf.Oidc)
+
+	router.Init(&authHandler)
 }

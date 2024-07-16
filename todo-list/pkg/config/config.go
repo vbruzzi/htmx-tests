@@ -11,10 +11,12 @@ type DbConf struct {
 }
 
 type OidcConfig struct {
-	Authority    string `env:"OIDC_AUTHORITY,required"`
-	ClientId     string `env:"OIDC_CLIENT_ID,required"`
-	ClientSecret string `env:"OIDC_CLIENT_SECRET,required"`
-	RedirectUrl  string `env:"OIDC_REDIRECT_URL,required"`
+	Authority   string `env:"OIDC_AUTHORITY,required"`
+	ClientId    string `env:"OIDC_CLIENT_ID,required"`
+	Realm       string `env:"OIDC_REALM,required"`
+	RedirectUrl string `env:"OIDC_REDIRECT_URL,required"`
+	Scheme      string `env:"OIDC_SCHEME,required"`
+	CookieName  string `env:"OIDC_COOKIE_NAME,required"`
 }
 
 type Conf struct {
