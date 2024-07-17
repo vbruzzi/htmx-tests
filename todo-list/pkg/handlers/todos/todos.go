@@ -1,7 +1,6 @@
 package todos
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	db "vbruzzi/todo-list/db/sqlc"
@@ -77,7 +76,6 @@ func (h *TodoHandler) deleteTodo(c echo.Context) error {
 	id, err := strconv.Atoi(idStr[1:])
 
 	if err != nil {
-		fmt.Printf("%+v", err)
 		return c.Render(http.StatusOK, "error", nil)
 	}
 

@@ -82,7 +82,7 @@
                 margin: 0;
             }
         </style>
-        
+
         <style>
             * {
                 font-family: "arial";
@@ -107,13 +107,7 @@
         <header>
             <h3>Your Todo List</h3>
         </header>
-        <section id="main-content">
-            {{ if .LoggedIn }}
-                {{ template "protectedContent" . }} 
-            {{ else }}
-                {{ template "login" }}
-            {{ end }}
-        </section>
+        <section id="main-content">{{ template "protectedContent" . }}</section>
     </body>
 </html>
 {{ end }}

@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"path/filepath"
 	db "vbruzzi/todo-list/db/sqlc"
-	"vbruzzi/todo-list/pkg/handlers/login"
 	"vbruzzi/todo-list/pkg/handlers/todos"
 	templateparser "vbruzzi/todo-list/pkg/templateParser"
 
@@ -19,19 +18,31 @@ type Router struct {
 }
 
 type homeData struct {
-	Todos    []db.Todo
-	LoggedIn bool
+	Todos []db.Todo
 }
 
 type AuthHandler interface {
 	Authenticate(c echo.Context) error
+	IsAuthenticated(c echo.Context) bool
 }
 
 func (r *Router) Init(authHandler AuthHandler) error {
-	r.echo.GET("/login", authHandler.Authenticate)
 	r.echo.Static("/static", "assets")
+
+	r.echo.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			if c.Path() == "/login" || authHandler.IsAuthenticated(c) {
+				return next(c)
+			}
+
+			return c.Redirect(http.StatusSeeOther, "/login")
+		}
+	})
+
+	r.echo.GET("/login", authHandler.Authenticate)
+
 	r.echo.GET("/", func(c echo.Context) error {
-		data := homeData{LoggedIn: false}
+		data := homeData{}
 
 		_, err := r.queries.ListTodos(context.Background())
 
@@ -41,9 +52,6 @@ func (r *Router) Init(authHandler AuthHandler) error {
 
 		return c.Render(http.StatusOK, "index", data)
 	})
-
-	loginGroup := r.echo.Group("/login")
-	login.NewLoginHandler(loginGroup, r.queries)
 
 	todoGroup := r.echo.Group("/todos")
 	todos.NewTodoHandler(todoGroup, r.queries)

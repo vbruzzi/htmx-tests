@@ -19,6 +19,10 @@ type AuthHandler struct {
 	CookieName  string
 }
 
+type TokenResult struct {
+	AccessToken string `json:"access_token"`
+}
+
 func (h *AuthHandler) validateAuthorizationCode(code string) (string, error) {
 	authUrl := url.URL{
 		Scheme: h.Scheme,
@@ -40,14 +44,19 @@ func (h *AuthHandler) validateAuthorizationCode(code string) (string, error) {
 
 	defer res.Body.Close()
 
-	v := map[string]string{}
+	v := TokenResult{}
 	err = json.NewDecoder(res.Body).Decode(&v)
 
 	if err != nil {
 		return "", err
 	}
 
-	return v["access_token"], nil
+	return v.AccessToken, nil
+}
+
+func (h *AuthHandler) IsAuthenticated(c echo.Context) bool {
+	cookie, err := c.Cookie(h.CookieName)
+	return err == nil && cookie.Value != ""
 }
 
 func (h *AuthHandler) generateAuthCodeUrl() string {
@@ -82,19 +91,15 @@ func (h *AuthHandler) Authenticate(c echo.Context) error {
 			Value: accessToken,
 		})
 
-		c.Redirect(http.StatusSeeOther, "/")
-
-		return nil
+		return c.Redirect(http.StatusSeeOther, "/")
 	}
 
 	if _, err := c.Cookie(h.CookieName); err != nil {
 		redirUrl := h.generateAuthCodeUrl()
-		c.Redirect(http.StatusSeeOther, redirUrl)
-		return nil
+		return c.Redirect(http.StatusSeeOther, redirUrl)
 	}
 
-	c.Redirect(http.StatusSeeOther, "/")
-	return nil
+	return c.Redirect(http.StatusSeeOther, "/")
 }
 
 func New(config config.OidcConfig) AuthHandler {
